@@ -1,12 +1,16 @@
-import type { ConnectionState, proto, SocketConfig, WASocket } from '@adiwajshing/baileys';
 import makeWASocket, {
   Browsers,
+  ConnectionState,
   DisconnectReason,
   isJidBroadcast,
   makeCacheableSignalKeyStore,
+  proto,
+  SocketConfig,
+  useMultiFileAuthState,
+  WASocket,
 } from '@adiwajshing/baileys';
 import type { Boom } from '@hapi/boom';
-import { initStore, Store, useSession } from '@ookamiiixd/baileys-store';
+import { initStore, Store } from '@ookamiiixd/baileys-store';
 import type { Response } from 'express';
 // import { writeFile } from 'fs/promises';
 // import { join } from 'path';
@@ -142,7 +146,7 @@ export async function createSession(options: createSessionOptions) {
   };
 
   const handleConnectionUpdate = SSE ? handleSSEConnectionUpdate : handleNormalConnectionUpdate;
-  const { state, saveCreds } = await useSession(sessionId);
+  const { state, saveCreds } = await useMultiFileAuthState(`state-session/${sessionId}`);
   const socket = makeWASocket({
     printQRInTerminal: true,
     browser: Browsers.ubuntu('Chrome'),
